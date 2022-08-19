@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"zhang-kg.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Where Code ExecutesThis chapter is all about enabling us to put our code everywhere that we can. We choose to enable all the compute resources in a heterogeneous system whenever it makes sense. SYCL p">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DPC Book Chap2">
+<meta property="og:url" content="https://zhang-kg.github.io/2022/08/20/DPC-Book-Chap2/index.html">
+<meta property="og:site_name" content="Zhang-kg">
+<meta property="og:description" content="Where Code ExecutesThis chapter is all about enabling us to put our code everywhere that we can. We choose to enable all the compute resources in a heterogeneous system whenever it makes sense. SYCL p">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zhang-kg.github.io/BUAA_undergraduate/超算/pac/Book%20DPC++%20img/fig2-1">
+<meta property="og:image" content="https://zhang-kg.github.io/BUAA_undergraduate/超算/pac/Book%20DPC++%20img/fig2-5.png">
+<meta property="og:image" content="https://zhang-kg.github.io/BUAA_undergraduate/超算/pac/Book%20DPC++%20img/fig2-6.png">
+<meta property="og:image" content="https://zhang-kg.github.io/BUAA_undergraduate/超算/pac/Book%20DPC++%20img/fig2-16.png">
+<meta property="og:image" content="https://zhang-kg.github.io/BUAA_undergraduate/超算/pac/Book%20DPC++%20img/fig2-17.png">
+<meta property="og:image" content="https://zhang-kg.github.io/BUAA_undergraduate/超算/pac/Book%20DPC++%20img/fig2-19.png">
+<meta property="article:published_time" content="2022-08-19T16:14:16.000Z">
+<meta property="article:modified_time" content="2022-08-19T16:20:09.716Z">
+<meta property="article:author" content="Zhang-kg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhang-kg.github.io/BUAA_undergraduate/超算/pac/Book%20DPC++%20img/fig2-1">
+
+
+<link rel="canonical" href="https://zhang-kg.github.io/2022/08/20/DPC-Book-Chap2/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://zhang-kg.github.io/2022/08/20/DPC-Book-Chap2/","path":"2022/08/20/DPC-Book-Chap2/","title":"DPC Book Chap2"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>DPC Book Chap2 | Zhang-kg</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Zhang-kg</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Where-Code-Executes"><span class="nav-number">1.</span> <span class="nav-text">Where Code Executes</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Single-Source"><span class="nav-number">1.1.</span> <span class="nav-text">Single-Source</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Host-Code"><span class="nav-number">1.1.1.</span> <span class="nav-text">Host Code</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Device-Code"><span class="nav-number">1.1.2.</span> <span class="nav-text">Device Code</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Choosing-Devices"><span class="nav-number">1.2.</span> <span class="nav-text">Choosing Devices</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Method-1-Run-on-a-Device-of-Any-Type"><span class="nav-number">1.3.</span> <span class="nav-text">Method#1: Run on a Device of Any Type</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Queues"><span class="nav-number">1.3.1.</span> <span class="nav-text">Queues</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Binding-a-Queue-to-a-Device-When-Any-Device-Will-Do"><span class="nav-number">1.3.2.</span> <span class="nav-text">Binding a Queue to a Device, When Any Device Will Do</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Method-2-Using-the-Host-Device-for-Development-and-Debugging"><span class="nav-number">1.4.</span> <span class="nav-text">Method#2: Using the Host Device for Development and Debugging</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Method-3-Using-a-GPU-or-Other-Accelerators"><span class="nav-number">1.5.</span> <span class="nav-text">Method#3: Using a GPU (or Other Accelerators)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Device-Types"><span class="nav-number">1.5.1.</span> <span class="nav-text">Device Types</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Accelerator-Devices"><span class="nav-number">1.5.1.1.</span> <span class="nav-text">Accelerator Devices</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Device-Selectors"><span class="nav-number">1.5.2.</span> <span class="nav-text">Device Selectors</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#When-Device-Selection-Fails"><span class="nav-number">1.5.2.1.</span> <span class="nav-text">When Device Selection Fails</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Method-4-Using-Multiple-Devices"><span class="nav-number">1.6.</span> <span class="nav-text">Method#4: Using Multiple Devices</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Method-5-Custom-Very-Specific-Device-Selection"><span class="nav-number">1.7.</span> <span class="nav-text">Method#5: Custom (Very Specific) Device Selection</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#device-selector-Base-Class"><span class="nav-number">1.7.1.</span> <span class="nav-text">device_selector Base Class</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Mechanisms-to-Score-a-Device"><span class="nav-number">1.7.2.</span> <span class="nav-text">Mechanisms to Score a Device</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Three-Paths-to-Device-Code-Execution-on-CPU"><span class="nav-number">1.8.</span> <span class="nav-text">Three Paths to Device Code Execution on CPU</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Creating-Work-on-a-Device"><span class="nav-number">1.9.</span> <span class="nav-text">Creating Work on a Device</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Introducing-the-Task-Graph"><span class="nav-number">1.9.1.</span> <span class="nav-text">Introducing the Task Graph</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Where-Is-the-Device-Code"><span class="nav-number">1.9.2.</span> <span class="nav-text">Where Is the Device Code</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Actions"><span class="nav-number">1.9.3.</span> <span class="nav-text">Actions</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Fallback"><span class="nav-number">1.9.4.</span> <span class="nav-text">Fallback</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%99%84%E5%BD%95A-Translation-Unit"><span class="nav-number">1.10.</span> <span class="nav-text">附录A: Translation Unit</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Zhang-kg"
+      src="/images/%E6%AD%8C.png">
+  <p class="site-author-name" itemprop="name">Zhang-kg</p>
+  <div class="site-description" itemprop="description">description</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://zhang-kg.github.io/2022/08/20/DPC-Book-Chap2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/%E6%AD%8C.png">
+      <meta itemprop="name" content="Zhang-kg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang-kg">
+      <meta itemprop="description" content="description">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="DPC Book Chap2 | Zhang-kg">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          DPC Book Chap2
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-08-20 00:14:16 / 修改时间：00:20:09" itemprop="dateCreated datePublished" datetime="2022-08-20T00:14:16+08:00">2022-08-20</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>18k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>16 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="Where-Code-Executes"><a href="#Where-Code-Executes" class="headerlink" title="Where Code Executes"></a>Where Code Executes</h1><p>This chapter is all about enabling us to put our code everywhere that we can. We choose to enable all the compute resources in a heterogeneous system whenever it makes sense.</p>
+<p>SYCL provides a framework for heterogeneous programming in which code can execute on a mixture of a host CPU and devices.</p>
+<span id="more"></span>
+<h2 id="Single-Source"><a href="#Single-Source" class="headerlink" title="Single-Source"></a>Single-Source</h2><p>SYCL programs can be single-source, meaning that the same translation unit (typically a source file and its headers) contains both the code that defines the compute kernels to be executed on SYCL devices and also the host code that orchestrates execution of those kernels.</p>
+<p>SYCL程序可以是氮源的，这意味着相同的目标文件（通常是源文件及其头文件）既包含在SYCL设备上执行的内核代码，也包含协调这些内核执行的主机代码。</p>
+<p><img src="../../../../BUAA_undergraduate/超算/pac/Book DPC++ img/fig2-1" alt="image-20220819104218396"></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;CL/sycl.hpp&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;array&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> sycl;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">constexpr</span> <span class="type">int</span> size = <span class="number">16</span>;</span><br><span class="line">    std::array&lt;<span class="type">int</span>, size&gt; data;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// Create queue on implementation-chosen default device</span></span><br><span class="line">    queue Q;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// Create buffer using host allocated &quot;data&quot; array</span></span><br><span class="line">    buffer B &#123;data&#125;;</span><br><span class="line">    </span><br><span class="line">    Q.<span class="built_in">submit</span>([&amp;](handler&amp; h) &#123;</span><br><span class="line">        accessor A&#123;B, h&#125;;</span><br><span class="line">        h.<span class="built_in">parallel_for</span>(size, [=](<span class="keyword">auto</span> &amp; idx) &#123;</span><br><span class="line">            A[idx] = idx;	<span class="comment">// only this is Device Code, other are Host Code</span></span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//Obtain access to buffer on the host</span></span><br><span class="line">    <span class="comment">// Will wait for device kernel to execute to generate data</span></span><br><span class="line">    host_accessor A&#123;B&#125;;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; size; i++) &#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">&quot;data[&quot;</span> &lt;&lt; i &lt;&lt; <span class="string">&quot;] = &quot;</span> &lt;&lt; A[i] &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><em>2-2 Simple SYCL program</em></p>
+<h3 id="Host-Code"><a href="#Host-Code" class="headerlink" title="Host Code"></a>Host Code</h3><p>Host code is the backbone of an application that defines and controls assignment of work to available devices. It is also the interface through which we define the data and dependences that should be managed by the runtime.</p>
+<p>主机代码是一个应用程序的骨干，它定义和控制对可用设备的工作分配。它也是我们定义运行时应该管理的数据和依赖项的接口。</p>
+<p>SYCL applications are standard C++ augmented with constructs that can be implemented as a C++ library.</p>
+<p>The host code in an application orchestrates data movement and compute offload to devices, but can also perform compute-intensive work itself and can use libraries like any C++ application.</p>
+<p>程序中的主机代码可以协调数据移动和计算设备offload，但是它本身也可以执行计算密集型工作，并且可以像任何C++程序一样使用库。</p>
+<h3 id="Device-Code"><a href="#Device-Code" class="headerlink" title="Device Code"></a>Device Code</h3><p>设备在概念上对应于正在执行主机代码的设备的一类加速器类的设备。主机上运行C++代码，设备上运行设备代码。</p>
+<p>Queues are the mechanism through which work is submitted to a device for future execution. 队列是将工作提交给设备以供将来执行的机制</p>
+<p>There are three important properties of device code to understand</p>
+<ol>
+<li><strong>It executes asynchronously from the host code.</strong> The host program submits device code to a device. The host program execution carries on before the submitted work is started on a device, providing the property that execution on devices is asynchronous to host program execution, unless we explicitly tie the two together.</li>
+<li><strong>There are restrictions on device code</strong> to make it possible to compile and achieve performance on accelerator devices. For example, dynamic memory allocation and runtime type information (RTTI, 动态内存分配和运行时相关信息) are not supported within device code (lead to performance degradation). The small set of device code restrictions is covered in Chap 10</li>
+<li><strong>Some functions and queries defined by SYCL are available only within device code,</strong> because they only make sense there. For example, work-item identifier queries that allow an executing instance of device code to query its position in a larger data parallel range (described in Chapter 4).</li>
+</ol>
+<p>In general, we will refer to work including device code that is submitted to the queue as <em>actions</em>. Actions 不仅包括将要执行的设备代码，还包括内存移动指令。</p>
+<h2 id="Choosing-Devices"><a href="#Choosing-Devices" class="headerlink" title="Choosing Devices"></a>Choosing Devices</h2><p>选择运行设备分为5个阶段：第一个阶段是不指定设备，代码将在某处运行；第二个阶段明确将device code运行在host device上，在任何操作系统中都可以这样做，通常用于debug；第三个阶段是将code分发到GPU或者其他加速器上；第四个阶段是分派到异构设备上，比如GPU和FPGA集合体上；最后是指定特定的设备，比如FPGA中的某个特定的FPGA。</p>
+<h2 id="Method-1-Run-on-a-Device-of-Any-Type"><a href="#Method-1-Run-on-a-Device-of-Any-Type" class="headerlink" title="Method#1: Run on a Device of Any Type"></a>Method#1: Run on a Device of Any Type</h2><p>运行时任意选择设备。可能不是最优的。先介绍一下Queue</p>
+<h3 id="Queues"><a href="#Queues" class="headerlink" title="Queues"></a>Queues</h3><p>一种抽象结构，通过它提交在单个设备上执行的操作。Actions通常是数据并行计算的启动，尽管也有其他命令可以使用，例如手动控制数据运动。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">queue</span> &#123;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">	<span class="comment">// Create a queue associated with the default device</span></span><br><span class="line">    	<span class="built_in">queue</span>(<span class="type">const</span> property_list = &#123;&#125;);</span><br><span class="line">    	<span class="built_in">queue</span>(<span class="type">const</span> async_handler&amp;,</span><br><span class="line">              <span class="type">const</span> property_list = &#123;&#125;);</span><br><span class="line">    	</span><br><span class="line">    <span class="comment">// Create a queue associated with an explicit device</span></span><br><span class="line">    <span class="comment">// A device selector may be used in place of a device</span></span><br><span class="line">    	<span class="built_in">queue</span>(<span class="type">const</span> device&amp;, <span class="type">const</span> property_list = &#123;&#125;);</span><br><span class="line">    	<span class="built_in">queue</span>(<span class="type">const</span> device&amp;, <span class="type">const</span> async_handler&amp;, </span><br><span class="line">              <span class="type">const</span> property_list = &#123;&#125;);</span><br><span class="line">    	</span><br><span class="line">    <span class="comment">// Create a queue associated with device in a specific context</span></span><br><span class="line">    <span class="comment">// A device selector may be used in place of a device</span></span><br><span class="line">    	<span class="built_in">queue</span>(<span class="type">const</span> context&amp;, <span class="type">const</span> device&amp;,</span><br><span class="line">              <span class="type">const</span> property_list = &#123;&#125;);</span><br><span class="line">    	<span class="built_in">queue</span>(<span class="type">const</span> context&amp;, <span class="type">const</span> device&amp;,</span><br><span class="line">              <span class="type">const</span> async_handler&amp;,</span><br><span class="line">              <span class="type">const</span> property_list = &#123;&#125;);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p><em>2-3 Simplified definition of the constructors of the <code>queue</code> class</em></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">queue</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">// Submit a command group to this queue.</span></span><br><span class="line">    <span class="comment">// The command group may be a lambda or functor object.</span></span><br><span class="line">    <span class="comment">// Returns an event representation the action</span></span><br><span class="line">    <span class="comment">// performed in the command group.</span></span><br><span class="line">    <span class="keyword">template</span> &lt; <span class="keyword">typename</span> T &gt;</span><br><span class="line">    <span class="function">event <span class="title">submit</span><span class="params">(T)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Wait for all previously submitted acitons to finish executing.</span></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">wait</span><span class="params">()</span></span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// Wait for all previously submitted actions to finish executing.</span></span><br><span class="line">    <span class="comment">// Pass asynchronous exceptions to an async_handler if one was provided</span></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">wait_and_throw</span><span class="params">()</span></span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p><em>2-4 Simplified definition of key member functions in the <code>queue</code> class</em></p>
+<p>队列被绑定到单个设备上，这种绑定在队列构造的时候就会发生。理解队列与某个特定的设备的绑定是很重要的，工作交给这个队列之后，队列将工作交给绑定的设备。不能将很多队列映射到设备的集合，因为这会模糊单个队列和某个设备的绑定关系，就像一个队列不能将任务分散到多个设备。队列和工作设备之间有一个明确的映射。</p>
+<p><img src="../../../../BUAA_undergraduate/超算/pac/Book DPC++ img/fig2-5.png" alt="image-20220819160406226"></p>
+<p>可以将多个队列映射到一个设备上，但是不能将一个队列映射到多个设备上</p>
+<p><img src="../../../../BUAA_undergraduate/超算/pac/Book DPC++ img/fig2-6.png" alt="image-20220819160604952"></p>
+<p>Because a queue is bound to a specific device, queue construction is the most common way in code to choose the device on which actions submitted to the queue will execute. Selection of the device when constructing a queue is achieved through a device selector abstraction and associated <code>device_selector</code> class.</p>
+<p>通过设备选择器类来构建队列，通过队列构造选择将代码提交到哪个设备上。</p>
+<h3 id="Binding-a-Queue-to-a-Device-When-Any-Device-Will-Do"><a href="#Binding-a-Queue-to-a-Device-When-Any-Device-Will-Do" class="headerlink" title="Binding a Queue to a Device, When Any Device Will Do"></a>Binding a Queue to a Device, When Any Device Will Do</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;CL/sycl.hpp&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> sycl;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// Create queue on whatever default device that the implementation </span></span><br><span class="line">    <span class="comment">// chooses. Implicit use of the default_selector</span></span><br><span class="line">    queue Q;</span><br><span class="line">    </span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;Selected device: &quot;</span> &lt;&lt; </span><br><span class="line">    Q.<span class="built_in">get_device</span>().<span class="built_in">get_info</span>&lt;info::device::name&gt;() &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>Figure 2-7.</strong> <em>Implicit default device selector through trivial construction of a queue</em></p>
+<p>输出：<code>Selected device: Intel(R) Graphics [0x020a]</code></p>
+<p>主机设备可以运行内核代码，是主机程序正在执行的处理器的抽象，因此始终存在。</p>
+<h2 id="Method-2-Using-the-Host-Device-for-Development-and-Debugging"><a href="#Method-2-Using-the-Host-Device-for-Development-and-Debugging" class="headerlink" title="Method#2: Using the Host Device for Development and Debugging"></a>Method#2: Using the Host Device for Development and Debugging</h2><p>主机设备始终存在，可以在没有其他设备时保证设备代码可以运行，并且有以下几个主要用途：</p>
+<ol>
+<li>在部署到HPC集群上进行性能测试和优化之前，可以在本地系统上开发和测试设备代码。</li>
+<li>设备可能只能提供接口，因此可以在主机上对设备代码进行调试。</li>
+<li>保证设备代码始终可用</li>
+</ol>
+<p>队列可以绑定到主机设备。程序可以显式地将 <code>host_selector</code> 传递给队列构造函数来选择创建绑定到主机设备的队列。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;CL/sycl.hpp&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> sycl;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// Create queue to use the host device explicitly</span></span><br><span class="line">    queue Q &#123;<span class="built_in">host_selector</span>()&#125;;</span><br><span class="line">    </span><br><span class="line">    std:: cout &lt;&lt; <span class="string">&quot;Selected device: &quot;</span> &lt;&lt;</span><br><span class="line">        Q.<span class="built_in">get_device</span>().<span class="built_in">get_info</span>&lt;info::device::name&gt;() &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    std:: cout &lt;&lt; <span class="string">&quot; -&gt; Device vendor: &quot;</span> &lt;&lt; </span><br><span class="line">        Q.<span class="built_in">get_device</span>().<span class="built_in">get_info</span>&lt;info::device::vendor&gt;() &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Selected device: <span class="built_in">Intel</span>(R) <span class="built_in">Xeon</span>(R) Gold <span class="number">6326</span> CPU @ <span class="number">2.90</span>GHz</span><br><span class="line"> -&gt; Device vendor: <span class="built_in">Intel</span>(R) Corporation</span><br></pre></td></tr></table></figure>
+<p>还有一些其他选择设备的selector class，<code>host_selector</code> 是其中的一种。</p>
+<h2 id="Method-3-Using-a-GPU-or-Other-Accelerators"><a href="#Method-3-Using-a-GPU-or-Other-Accelerators" class="headerlink" title="Method#3: Using a GPU (or Other Accelerators)"></a>Method#3: Using a GPU (or Other Accelerators)</h2><p>Devices are grouped into several broad categories, and SYCL provides built-in selector classes for them.</p>
+<h3 id="Device-Types"><a href="#Device-Types" class="headerlink" title="Device Types"></a>Device Types</h3><p>There are two main categories of devices to which a queue can be bound:</p>
+<ol>
+<li>The host device, which has already been described.</li>
+<li>Accelerator devices such as a GPU, an FPGA, or a CPU device, which are used to accelerate workloads in our applications.</li>
+</ol>
+<h4 id="Accelerator-Devices"><a href="#Accelerator-Devices" class="headerlink" title="Accelerator Devices"></a>Accelerator Devices</h4><ol>
+<li>CPU devices</li>
+<li>GPU devices</li>
+<li>Accelerators, which capture devices that don’t identify as either a CPU device or a GPU device. This includes FPGA and DSP devices.</li>
+</ol>
+<h3 id="Device-Selectors"><a href="#Device-Selectors" class="headerlink" title="Device Selectors"></a>Device Selectors</h3><p>队列的构造函数为：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">queue</span>(<span class="type">const</span> device_selector &amp; deviceSelector,</span><br><span class="line">      <span class="type">const</span> property_list &amp; propList = &#123;&#125;);</span><br></pre></td></tr></table></figure>
+<p>有5个内置的selector：</p>
+<ul>
+<li><code>default_selector</code>: Any device of the implementation’s choosing</li>
+<li><code>host_selector</code>: Select the host device (always available).</li>
+<li><code>cpu_selector</code>: Select a device that identifies itself as a CPU in device queries</li>
+<li><code>gpu_selector</code>: Select a device that identifies itself as a GPU in device queries</li>
+<li><code>accelerator_selector</code>: select a device that identifies itself as an “accelerator”, which includes FPGAs</li>
+</ul>
+<p>在DPC++中包含一个额外的选择器（SYCL中不可用），可以通过包含头文件 <code>CL/sycl/intel/fpga_extensions.hpp</code> 中：</p>
+<ul>
+<li><code>INTEL::fpga_selector</code>: Select a device that identifies itself as an FPGA</li>
+</ul>
+<p>使用实例2-10使用cpu_selector：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//2-10 cpu_selector</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;CL/sycl.hpp&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> sycl;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// Create queue to use the CPU device explicitly</span></span><br><span class="line">    queue Q&#123;<span class="built_in">cpu_selector</span>()&#125;;</span><br><span class="line">    </span><br><span class="line">    std:: cout &lt;&lt; <span class="string">&quot;Selected device: &quot;</span> &lt;&lt;</span><br><span class="line">        Q.<span class="built_in">get_device</span>().<span class="built_in">get_info</span>&lt;info::device::name&gt;() &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    std:: cout &lt;&lt; <span class="string">&quot; -&gt; Device vendor: &quot;</span> &lt;&lt; </span><br><span class="line">        Q.<span class="built_in">get_device</span>().<span class="built_in">get_info</span>&lt;info::device::vendor&gt;() &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>使用示例2-12：</strong>使用各种内置选择器；also demonstrates use of device selectors with another class (device) that accepts a <code>device_selector</code> on construction.</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;CL/sycl.hpp&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;CL/INTEL/fpga_extensions.hpp&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;string&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> sycl;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">output_dev_info</span><span class="params">(<span class="type">const</span> device&amp; dev, </span></span></span><br><span class="line"><span class="params"><span class="function">                     <span class="type">const</span> std::string&amp; selector_name)</span> </span>&#123;</span><br><span class="line">    std::cout &lt;&lt; selector_name &lt;&lt; <span class="string">&quot;: Selected device: &quot;</span> &lt;&lt;</span><br><span class="line">        dev.<span class="built_in">get_info</span>&lt;info::device::name&gt;() &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;                  -&gt; Device vendor: &quot;</span> &lt;&lt; </span><br><span class="line">        dev.<span class="built_in">get_info</span>&lt;info::device::vendor&gt;() &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">output_dev_info</span>(device&#123;default_selector&#123;&#125;&#125;,</span><br><span class="line">                    <span class="string">&quot;default_selector&quot;</span>);</span><br><span class="line">    <span class="built_in">output_dev_info</span>(device&#123;host_selector&#123;&#125;&#125;,</span><br><span class="line">                    <span class="string">&quot;host_selector&quot;</span>);</span><br><span class="line">    <span class="built_in">output_dev_info</span>(device&#123;cpu_selector&#123;&#125;&#125;,</span><br><span class="line">                    <span class="string">&quot;cpu_selector&quot;</span>);</span><br><span class="line">    <span class="built_in">output_dev_info</span>(device&#123;gpu_selector&#123;&#125;&#125;,</span><br><span class="line">                    <span class="string">&quot;gpu_selector&quot;</span>);</span><br><span class="line">    <span class="built_in">output_dev_info</span>(device&#123;accelerator_selector&#123;&#125;&#125;,</span><br><span class="line">                    <span class="string">&quot;accelerator_selector&quot;</span>);</span><br><span class="line">    <span class="built_in">output_dev_info</span>(device&#123;INTEL::fpga_selector&#123;&#125;&#125;,</span><br><span class="line">                    <span class="string">&quot;fpga_selector&quot;</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="When-Device-Selection-Fails"><a href="#When-Device-Selection-Fails" class="headerlink" title="When Device Selection Fails"></a>When Device Selection Fails</h4><p>如果创建队列时使用了gpu_selector，但是运行时没有可用的GPU设备，那么选择器就会抛出一个 <code>runtime_error</code>。</p>
+<h2 id="Method-4-Using-Multiple-Devices"><a href="#Method-4-Using-Multiple-Devices" class="headerlink" title="Method#4: Using Multiple Devices"></a>Method#4: Using Multiple Devices</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;CL/sycl.hpp&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;CL/sycl/INTEL/fpga_extensions.hpp&gt;</span> <span class="comment">// For fpga_selector</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> sycl;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">queue <span class="title">my_gpu_queue</span><span class="params">( gpu_selector&#123;&#125; )</span></span>;</span><br><span class="line">    <span class="function">queue <span class="title">my_fpga_queue</span><span class="params">( INTEL::fpga_selector&#123;&#125; )</span></span>;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;Selected device 1: &quot;</span> &lt;&lt;</span><br><span class="line">        my_gpu_queue.<span class="built_in">get_device</span>().<span class="built_in">get_info</span>&lt;info::device::name&gt;() &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;Selected device 2: &quot;</span> &lt;&lt;</span><br><span class="line">        my_fpga_queue.<span class="built_in">get_device</span>().<span class="built_in">get_info</span>&lt;info::device::name&gt;() &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>; </span><br><span class="line">&#125;</span><br><span class="line">Possible Output:</span><br><span class="line">Selected device <span class="number">1</span>: <span class="built_in">Intel</span>(R) Gen9 HD Graphics NEO</span><br><span class="line">Selected device <span class="number">2</span>: pac_a10 : PAC Arria <span class="number">10</span> Platform</span><br></pre></td></tr></table></figure>
+<h2 id="Method-5-Custom-Very-Specific-Device-Selection"><a href="#Method-5-Custom-Very-Specific-Device-Selection" class="headerlink" title="Method#5: Custom (Very Specific) Device Selection"></a>Method#5: Custom (Very Specific) Device Selection</h2><p>编写一个自定义选择器。</p>
+<h3 id="device-selector-Base-Class"><a href="#device-selector-Base-Class" class="headerlink" title="device_selector Base Class"></a><code>device_selector</code> Base Class</h3><p>所有设备选择器都来自这个基类</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">virtual</span> <span class="type">int</span> <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="type">const</span> device &amp;dev)</span> <span class="type">const</span> </span>&#123;</span><br><span class="line">    ; <span class="comment">/* User logic*/</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最需要知道的三件事：</p>
+<ol>
+<li>The function call operator is automatically called once for each device that the runtime finds as accessible to the application, including the host device.</li>
+<li>The operator returns an integer score each time that it is invoked. The highest score across all available devices is the device that the selector chooses.</li>
+<li>A negative integer returned by the function call operator means that the device being considered must not be chosen.</li>
+</ol>
+<h3 id="Mechanisms-to-Score-a-Device"><a href="#Mechanisms-to-Score-a-Device" class="headerlink" title="Mechanisms to Score a Device"></a>Mechanisms to Score a Device</h3><p>针对一个设备创建分数：</p>
+<ol>
+<li>Return a positive value for a specific device class.</li>
+<li>String match on a device name and/or device vendor string.</li>
+<li>Anything we can imagine in code leading to an integer value, based on device or platform queries.</li>
+</ol>
+<p>例子：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">my_selector</span> : <span class="keyword">public</span> device_selector &#123;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="type">const</span> device &amp;dev)</span> <span class="type">const</span> <span class="keyword">override</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (dev.<span class="built_in">get_info</span>&lt;info::device::name&gt;().<span class="built_in">find</span>(<span class="string">&quot;Arria&quot;</span>) != std::string::npos &amp;&amp; dev.<span class="built_in">get_info</span>&lt;info::device::vendor&gt;().<span class="built_in">find</span>(<span class="string">&quot;Intel&quot;</span>) != std::string::npos) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p><strong>Figure 2-15.</strong> <em>Custom selector for Intel Arria FPGA device</em></p>
+<h2 id="Three-Paths-to-Device-Code-Execution-on-CPU"><a href="#Three-Paths-to-Device-Code-Execution-on-CPU" class="headerlink" title="Three Paths to Device Code Execution on CPU"></a>Three Paths to Device Code Execution on CPU</h2><p><img src="../../../../BUAA_undergraduate/超算/pac/Book DPC++ img/fig2-16.png" alt="image-20220819230544686" style="zoom:50%;" /></p>
+<h2 id="Creating-Work-on-a-Device"><a href="#Creating-Work-on-a-Device" class="headerlink" title="Creating Work on a Device"></a>Creating Work on a Device</h2><p>介绍工作分派构造。</p>
+<h3 id="Introducing-the-Task-Graph"><a href="#Introducing-the-Task-Graph" class="headerlink" title="Introducing the Task Graph"></a>Introducing the Task Graph</h3><p>基础SYCL执行模型是节点图。Each node (unit of work) in this graph contains an action to be performed on a device, with the most common action being a data-parallel device kernel invocation. </p>
+<p><img src="../../../../BUAA_undergraduate/超算/pac/Book DPC++ img/fig2-17.png" alt="image-20220819231233933" style="zoom: 50%;" /></p>
+<p>节点依赖或者执行完全与主机程序运行异步。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Q.<span class="built_in">submit</span>([&amp;](handler&amp; h) &#123;					<span class="comment">// Command group</span></span><br><span class="line">    accessor acc&#123;B, h&#125;;						<span class="comment">// Command group</span></span><br><span class="line">    </span><br><span class="line">    h.<span class="built_in">parallel_for</span>(size, [=](<span class="keyword">auto</span>&amp; idx) &#123;	<span class="comment">//Device code</span></span><br><span class="line">        acc[idx] = idx;						<span class="comment">//Device code</span></span><br><span class="line">    &#125;);										<span class="comment">//Device Code</span></span><br><span class="line">&#125;);											<span class="comment">// Command group</span></span><br></pre></td></tr></table></figure>
+<p><strong>Figure 2-18.</strong> <em>Submission of device code</em></p>
+<h3 id="Where-Is-the-Device-Code"><a href="#Where-Is-the-Device-Code" class="headerlink" title="Where Is the Device Code"></a>Where Is the Device Code</h3><p>最终传递给parallel_for的参数是在2-18中定义的lambda函数，这是设备上将会执行的设备代码。这里的parallel_for区分了设备代码和主机代码。parallel_for是handler类其中一个任务分配方式。2-19中记录了handler类的简化定义。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">handler</span> &#123; </span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">// Specify event(s) that must be complete before the action </span></span><br><span class="line">    <span class="comment">// defined in this command group executes.</span></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">depends_on</span><span class="params">(std::vector&lt;event&gt;&amp; events)</span></span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// Guarantee that the memory object accessed by the accessor</span></span><br><span class="line">    <span class="comment">// is updated on the host after this action executes.</span></span><br><span class="line">    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> AccessorT&gt; </span><br><span class="line">    	<span class="function"><span class="type">void</span> <span class="title">update_host</span><span class="params">(AccessorT acc)</span></span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// Submit a memset operation writing to the specified pointer.</span></span><br><span class="line">    <span class="comment">// Return an event representing this operation.</span></span><br><span class="line">    <span class="function">event <span class="title">memset</span><span class="params">(<span class="type">void</span> *ptr, <span class="type">int</span> value, <span class="type">size_t</span> count)</span></span>; </span><br><span class="line">    </span><br><span class="line">    <span class="comment">// Submit a memcpy operation copying from src to dest.</span></span><br><span class="line">    <span class="comment">// Return an event representing this operation.</span></span><br><span class="line">    <span class="function">event <span class="title">memcpy</span><span class="params">(<span class="type">void</span> *dest, <span class="type">const</span> <span class="type">void</span> *src, <span class="type">size_t</span> count)</span></span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// Copy to/from an accessor and host memory.</span></span><br><span class="line">    <span class="comment">// Accessors are required to have appropriate correct permissions.</span></span><br><span class="line">    <span class="comment">// Pointer can be a raw pointer or shared_ptr.</span></span><br><span class="line">    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> SrcAccessorT, <span class="keyword">typename</span> DestPointerT&gt; </span><br><span class="line">    	<span class="function"><span class="type">void</span> <span class="title">copy</span><span class="params">(SrcAccessorT src, DestPointerT dest)</span></span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> SrcPointerT, <span class="keyword">typename</span> DestAccessorT&gt; </span><br><span class="line">    	<span class="function"><span class="type">void</span> <span class="title">copy</span><span class="params">(SrcPointerT src, DestAccessorT dest)</span></span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// Copy between accessors.</span></span><br><span class="line">    <span class="comment">// Accessors are required to have appropriate correct permissions.</span></span><br><span class="line">    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> SrcAccessorT, <span class="keyword">typename</span> DestAccessorT&gt; </span><br><span class="line">    	<span class="function"><span class="type">void</span> <span class="title">copy</span><span class="params">(SrcAccessorT src, DestAccessorT dest)</span></span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// Submit different forms of kernel for execution.</span></span><br><span class="line">    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> KernelName, <span class="keyword">typename</span> KernelType&gt; </span><br><span class="line">    	<span class="function"><span class="type">void</span> <span class="title">single_task</span><span class="params">(KernelType kernel)</span></span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> KernelName, <span class="keyword">typename</span> KernelType, <span class="type">int</span> Dims&gt; </span><br><span class="line">    	<span class="function"><span class="type">void</span> <span class="title">parallel_for</span><span class="params">(range&lt;Dims&gt; num_work_items, </span></span></span><br><span class="line"><span class="params"><span class="function">                          KernelType kernel)</span></span>; </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> KernelName, <span class="keyword">typename</span> KernelType, <span class="type">int</span> Dims&gt; </span><br><span class="line">    	<span class="function"><span class="type">void</span> <span class="title">parallel_for</span><span class="params">(nd_range&lt;Dims&gt; execution_range, </span></span></span><br><span class="line"><span class="params"><span class="function">                          KernelType kernel)</span></span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> KernelName, <span class="keyword">typename</span> KernelType, <span class="type">int</span> Dims&gt; </span><br><span class="line">    	<span class="function"><span class="type">void</span> <span class="title">parallel_for_work_group</span><span class="params">(range&lt;Dims&gt; num_groups, </span></span></span><br><span class="line"><span class="params"><span class="function">                                     KernelType kernel)</span></span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> KernelName, <span class="keyword">typename</span> KernelType, <span class="type">int</span> Dims&gt; </span><br><span class="line">    	<span class="function"><span class="type">void</span> <span class="title">parallel_for_work_group</span><span class="params">(range&lt;Dims&gt; num_groups, </span></span></span><br><span class="line"><span class="params"><span class="function">                                     range&lt;Dims&gt; group_size, </span></span></span><br><span class="line"><span class="params"><span class="function">                                     KernelType kernel)</span></span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p><strong>Figure 2-19.</strong> <em>Simplified definition of member functions in the <code>handler</code> class</em></p>
+<p>除了使用handler类中的成员来提交设备代码之外，还有一些queue类的成员运行提交工作。图2-20中显示的queue类成员是简化某些模式的快捷方式，我们将在未来的章节中看到使用的这些快捷方式。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">queue</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">// Submit a memset operation writing to the specified pointer.</span></span><br><span class="line">    <span class="comment">// Return an event representing this operation.</span></span><br><span class="line">    <span class="function">event <span class="title">memset</span><span class="params">(<span class="type">void</span> *ptr, <span class="type">int</span> value, <span class="type">size_t</span> count)</span></span>;</span><br><span class="line">        </span><br><span class="line">    <span class="comment">// Submit a memcpy operation copying from src to dest.</span></span><br><span class="line">    <span class="comment">// Return an event representing this operation.</span></span><br><span class="line">    <span class="function">event <span class="title">memcpy</span><span class="params">(<span class="type">void</span> *dest, <span class="type">const</span> <span class="type">void</span> *src, <span class="type">size_t</span> count)</span></span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// Submit different forms of kernel for execution.</span></span><br><span class="line">    <span class="comment">// Return an event representing the kernel operation.</span></span><br><span class="line">    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> KernelName, <span class="keyword">typename</span> KernelType&gt;</span><br><span class="line">    	<span class="function">event <span class="title">single_task</span><span class="params">(KernelType kernel)</span></span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> KernelName, <span class="keyword">typename</span> KernelType, <span class="type">int</span> Dims&gt;</span><br><span class="line">    	<span class="function">event <span class="title">parallel_for</span><span class="params">(range&lt;Dims&gt; num_work_items, </span></span></span><br><span class="line"><span class="params"><span class="function">                           KernelType kernel)</span></span>; </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> KernelName, <span class="keyword">typename</span> KernelType, <span class="type">int</span> Dims&gt;</span><br><span class="line">    	<span class="function">event <span class="title">parallel_for</span><span class="params">(nd_range&lt;Dims&gt; execution_range, </span></span></span><br><span class="line"><span class="params"><span class="function">                           KernelType kernel)</span></span>; </span><br><span class="line">    </span><br><span class="line">    <span class="comment">// Submit different forms of kernel for execution. </span></span><br><span class="line">    <span class="comment">// Wait for the specified event(s) to complete </span></span><br><span class="line">    <span class="comment">// before executing the kernel. </span></span><br><span class="line">    <span class="comment">// Return an event representing the kernel operation.</span></span><br><span class="line">    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> KernelName, <span class="keyword">typename</span> KernelType&gt;</span><br><span class="line">    	<span class="function">event <span class="title">single_task</span><span class="params">(<span class="type">const</span> std::vector&lt;event&gt;&amp; events, </span></span></span><br><span class="line"><span class="params"><span class="function">                          KernelType kernel)</span></span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> KernelName, <span class="keyword">typename</span> KernelType, <span class="type">int</span> Dims&gt;</span><br><span class="line">    	<span class="function">event <span class="title">parallel_for</span><span class="params">(range&lt;Dims&gt; num_work_items, </span></span></span><br><span class="line"><span class="params"><span class="function">                           <span class="type">const</span> std::vector&lt;event&gt;&amp; events, </span></span></span><br><span class="line"><span class="params"><span class="function">                           KernelType kernel)</span></span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> KernelName, <span class="keyword">typename</span> KernelType, <span class="type">int</span> Dims&gt;</span><br><span class="line">    	<span class="function">event <span class="title">parallel_for</span><span class="params">(nd_range&lt;Dims&gt; execution_range, </span></span></span><br><span class="line"><span class="params"><span class="function">                       <span class="type">const</span> std::vector&lt;event&gt;&amp; events, </span></span></span><br><span class="line"><span class="params"><span class="function">                       KernelType kernel)</span></span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p><strong>Figure 2-20.</strong> <em>Simplified definition of member functions in the <code>queue</code> class that act as shorthand notation for equivalent functions in the <code>handler</code> class</em></p>
+<h3 id="Actions"><a href="#Actions" class="headerlink" title="Actions"></a>Actions</h3><p>The <code>parallel_for</code> is within a command group (CG) submitted to a queue, and the <code>queue</code> defines the device on which the work is to be performed. Within the command group, there are two categories of code:</p>
+<ol>
+<li>对一个action的一个调用，要么是对设备代码进行排序的操作，要么是如copy这样的手动内存操作</li>
+<li>设置依赖关系的主机代码。</li>
+</ol>
+<p><img src="../../../../BUAA_undergraduate/超算/pac/Book DPC++ img/fig2-19.png" alt="image-20220819233418478"></p>
+<p>command group只能调用2-21中的单个操作（调用多个将报错）</p>
+<p>A command group must have exactly one action within it, such as a kernel launch or explicit memory operation.</p>
+<p>Command group中通常包含来自每个类别的代码，和定义了依赖关系的code（host program的一部分），在运行时一旦依赖条件满足，device code就会执行。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;CL/sycl.hpp&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;array&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> sycl;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">constexpr</span> <span class="type">int</span> size = <span class="number">16</span>;</span><br><span class="line">    std::array&lt;<span class="type">int</span>, size&gt; data;</span><br><span class="line">    buffer B &#123;data&#125;;</span><br><span class="line">    </span><br><span class="line">    queue Q&#123;&#125;;</span><br><span class="line">    </span><br><span class="line">    std::cout &lt;&lt; Q.<span class="built_in">get_device</span>().<span class="built_in">get_info</span>&lt;info::device::name&gt;()&lt;&lt;<span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    Q.<span class="built_in">submit</span>([&amp;](handler&amp; h) &#123;			<span class="comment">// Immediate code to set up task </span></span><br><span class="line">        accessor acc&#123;B, h&#125;;				<span class="comment">// graph node</span></span><br><span class="line">        		</span><br><span class="line">        h.<span class="built_in">parallel_for</span>(size, [=](<span class="keyword">auto</span>&amp;idx) &#123;	<span class="comment">// Device code runs in the future when dependences are met </span></span><br><span class="line">            acc[idx] = idx;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>Figure 2-22.</strong> <em>Submission of device code</em></p>
+<p>上面有三类代码：</p>
+<ol>
+<li>主机代码：驱动应用程序，包括创建和管理数据缓冲区，将工作提交给队列，在command group中形成新节点，以便异步执行</li>
+<li>command group中的主机代码：这部分代码在主机代码正在执行的处理器上运行。例如设置节点依赖关系。</li>
+<li>an Action：Fig2-21 中列出的任何操作都可以包含在command group中，定义了异步执行的工作。</li>
+</ol>
+<h3 id="Fallback"><a href="#Fallback" class="headerlink" title="Fallback"></a>Fallback</h3><p>如果任务无法提交到设备上，SYCL设置了一个fallback queue。</p>
+<p>在没有GPU的情况下，下面的代码会产生错误</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;CL/sycl.hpp&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;array&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> sycl;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">constexpr</span> <span class="type">int</span> global_size = <span class="number">16</span>;</span><br><span class="line">    <span class="keyword">constexpr</span> <span class="type">int</span> local_size = <span class="number">16</span>;</span><br><span class="line">    buffer&lt;<span class="type">int</span>,<span class="number">2</span>&gt; B&#123; range&#123; global_size, global_size &#125;&#125;;</span><br><span class="line">    </span><br><span class="line">    queue gpu_Q&#123; gpu_selector&#123;&#125; &#125;;</span><br><span class="line">    queue host_Q&#123; host_selector&#123;&#125; &#125;;</span><br><span class="line">    </span><br><span class="line">    nd_range NDR &#123;</span><br><span class="line">        range&#123; global_size, global_size &#125;,</span><br><span class="line">        range&#123; local_size, local_size &#125;&#125;;</span><br><span class="line">    </span><br><span class="line">    gpu_Q.<span class="built_in">submit</span>([&amp;](handler&amp; h)&#123;</span><br><span class="line">        accessor acc&#123;B, h&#125;;</span><br><span class="line">        h.<span class="built_in">parallel_for</span>( NDR , [=](<span class="keyword">auto</span> id) &#123;</span><br><span class="line">            <span class="keyword">auto</span> ind = id.<span class="built_in">get_global_id</span>();</span><br><span class="line">            acc[ind] = ind[<span class="number">0</span>] + ind[<span class="number">1</span>];</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;, host_Q); <span class="comment">/** &lt;&lt;== Fallback Queue Specified **/</span></span><br><span class="line">    </span><br><span class="line">    host_accessor acc&#123;B&#125;;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>; i &lt; global_size; i++)&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> j = <span class="number">0</span>; j &lt; global_size; j++)&#123;</span><br><span class="line">            <span class="keyword">if</span>( acc[i][j] != i+j ) &#123;</span><br><span class="line">                std::cout&lt;&lt;<span class="string">&quot;Wrong result\n&quot;</span>;</span><br><span class="line">                <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125; &#125; &#125;</span><br><span class="line">    std::cout&lt;&lt;<span class="string">&quot;Correct results\n&quot;</span>;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>图2-23显示了由于请求的工作组大小而无法在某些gpu上开始执行的代码。我们可以将辅助队列作为提交函数的参数，如果命令组未能进入主队列，则使用此辅助队列（在本例中为主机设备）。</p>
+<h2 id="附录A-Translation-Unit"><a href="#附录A-Translation-Unit" class="headerlink" title="附录A: Translation Unit"></a>附录A: Translation Unit</h2><p>在C中，translation unit（翻译单元）也可称为compilation unit(编译单元），translation unit是C预处理后的输出，即一个源文件经过预处理后。经过translation unit后产生一个目标文件（比如.c通过编译产生.o文件）</p>
+
+    </div>
+
+    
+    
+    
+
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+      
+    </div>
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Zhang-kg
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://zhang-kg.github.io/2022/08/20/DPC-Book-Chap2/" title="DPC Book Chap2">https://zhang-kg.github.io/2022/08/20/DPC-Book-Chap2/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/08/18/DPC-Book-Chap1/" rel="prev" title="DPC++ Book Chap1">
+                  <i class="fa fa-chevron-left"></i> DPC++ Book Chap1
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zhang-kg</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">85k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:17</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.0/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"mhchem":true,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
